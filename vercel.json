@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "mal-backend/index.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/mal-backend/index.js" },
+    { "src": "/(.*)", "dest": "/$1", "middleware": false }
+  ]
+}

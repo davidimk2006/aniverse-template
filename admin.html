@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin Upload — Aniverse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="logo"><img src="logo.svg" alt="logo"><h1>Aniverse Admin</h1></div></header>
+  <main class="container">
+    <h2>Upload Video (Admin)</h2>
+    <p>Catatan: ini hanya form statis. Untuk fungsional, hubungkan ke backend/Firebase Storage dan verifikasi admin.</p>
+    <p><strong>Note:</strong> Backend harus berjalan dan `ADMIN_TOKEN` diset. Jika deploy ke Vercel, gunakan persistent storage (see backend README).</p>
+    <form id="upload-form">
+      <label>Admin Token<br><input id="admin-token" placeholder="x-admin-token" required></label><br><br>
+      <label>Anime ID (optional)<br><input name="animeId"></label><br><br>
+      <label>Judul<br><input name="title" required></label><br><br>
+      <label>Episode<br><input name="episode" required></label><br><br>
+      <label>Embed Link<br><input name="embed" required placeholder="https://... or iframe src" ></label><br><br>
+      <label>Download Link<br><input name="download"></label><br><br>
+      <label>Resolusi<br><input name="quality"></label><br><br>
+      <button class="btn" type="submit">Upload</button>
+    </form>
+  </main>
+  <script>
+    const API_BASE = window.MAL_BACKEND || 'http://localhost:5000';
+    document.getElementById('upload-form').addEventListener('submit', async e=>{
+      e.preventDefault();
+      const f = e.target;
+      const token = document.getElementById('admin-token').value.trim();
+      if(!token){ alert('Masukkan admin token'); return; }
+      const body = { title: f.title.value, episode: f.episode.value, embed: f.embed.value, download: f.download.value, quality: f.quality.value, animeId: f.animeId.value };
+      try{
+        const r = await fetch(`${API_BASE}/api/admin/video`, { method:'POST', headers: { 'Content-Type':'application/json', 'x-admin-token': token }, body: JSON.stringify(body) });
+        const data = await r.json();
+        if(!r.ok) throw new Error(JSON.stringify(data));
+        alert('Upload metadata sukses');
+        f.reset();
+      }catch(err){ alert('Upload gagal: '+err.message); }
+    });
+  </script>
+</body>
+</html>
