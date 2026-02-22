@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!doctype html>
 <html lang="id">
 <head>
@@ -67,3 +68,74 @@
   </script>
 </body>
 </html>
+=======
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Watch — Aniverse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><div class="logo"><img src="logo.svg" alt="logo"><h1>Aniverse</h1></div></header>
+  <main class="player-wrap">
+    <div class="video-box">
+      <div id="player" style="background:#000;height:420px;display:flex;align-items:center;justify-content:center;color:#888">Video player placeholder</div>
+      <div class="controls">
+        <label>Episode: <select id="episode-list"></select></label>
+        <select id="quality"><option>1080p</option><option>720p</option><option>480p</option></select>
+        <button class="btn" id="prev">Previous Episode</button>
+        <button class="btn" id="next">Next Episode</button>
+      </div>
+      <div style="margin-top:10px"><small>Source: backend-managed uploads (if available)</small></div>
+    </div>
+  </main>
+  <script>
+    function q(n){return new URLSearchParams(location.search).get(n)}
+    const id=q('id'), ep=q('ep')||1;
+    const API_BASE = window.MAL_BACKEND || 'http://localhost:5000';
+
+    const playerEl = document.getElementById('player');
+    const epSelect = document.getElementById('episode-list');
+
+    function renderEmbed(embed){
+      // if embed is a direct iframe src or full iframe HTML, handle simply
+      if(!embed) { playerEl.innerText = `No embed available for ${id}`; return; }
+      // try to detect iframe src
+      const m = embed.match(/src=["']([^"']+)["']/i);
+      let src = m ? m[1] : embed;
+      // create iframe
+      playerEl.innerHTML = `<iframe src="${src}" frameborder="0" allowfullscreen style="width:100%;height:100%"></iframe>`;
+    }
+
+    async function loadEpisodes(){
+      try{
+        const r = await fetch(`${API_BASE}/api/videos/${encodeURIComponent(id)}`);
+        if(!r.ok) throw new Error('no episodes');
+        const list = await r.json();
+        if(!Array.isArray(list) || list.length===0){ playerEl.innerText = `Playing ${id} — Episode ${ep} (no backend episodes)`; return; }
+        // populate select
+        epSelect.innerHTML = list.sort((a,b)=>a.episode-b.episode).map(v=>`<option value="${v.episode}" data-embed="${encodeURIComponent(v.embed)}">EP ${v.episode} — ${v.title}</option>`).join('');
+        const chosen = ep || list[0].episode;
+        epSelect.value = chosen;
+        const selOpt = epSelect.options[epSelect.selectedIndex];
+        const embed = decodeURIComponent(selOpt.getAttribute('data-embed'));
+        renderEmbed(embed);
+      }catch(err){ console.warn('loadEpisodes failed',err); playerEl.innerText = `Playing ${id} — Episode ${ep}`; }
+    }
+
+    epSelect.addEventListener('change', ()=>{
+      const opt = epSelect.options[epSelect.selectedIndex];
+      const embed = decodeURIComponent(opt.getAttribute('data-embed'));
+      renderEmbed(embed);
+    });
+
+    document.getElementById('next').addEventListener('click',()=>{ const next = Number(epSelect.value)+1; epSelect.value = next; epSelect.dispatchEvent(new Event('change')); });
+    document.getElementById('prev').addEventListener('click',()=>{ const prev = Number(epSelect.value)-1; if(prev>=1){ epSelect.value = prev; epSelect.dispatchEvent(new Event('change')); } });
+
+    loadEpisodes();
+  </script>
+</body>
+</html>
+>>>>>>> 1a81bd7 (Initial Aniverse template + MAL backend)

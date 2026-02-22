@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!doctype html>
 <html lang="id">
 <head>
@@ -48,3 +49,55 @@
   </script>
 </body>
 </html>
+=======
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Detail Anime — Aniverse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo"><img src="logo.svg" alt="logo"><h1>Aniverse</h1></div>
+  </header>
+  <main class="container">
+    <div id="detail" class="card"></div>
+  </main>
+  <script>
+    function q(name){const u=new URLSearchParams(location.search);return u.get(name)}
+    const id = q('id');
+    const qstr = q('q');
+    const el = document.getElementById('detail');
+
+    async function renderSearch(qs){
+      el.innerHTML = `<h2>Search: ${qs}</h2><p>Loading...</p>`;
+      const data = await window.MAL?.doSearch(qs);
+      if(!data || !data.data){ el.innerHTML = `<p>Tidak ada hasil atau backend tidak tersedia.</p>`; return; }
+      const items = data.data.map(x=>`<div class="card" style="display:inline-block;margin:6px;width:160px"><img src="${x.node?.main_picture?.medium||x.main_picture?.medium||'https://via.placeholder.com/300x420'}" style="width:100%;height:220px;object-fit:cover"><h3>${x.node?.title||x.title}</h3><a class="btn" href="anime.html?id=${x.node?.id||x.id}">Detail</a></div>`).join('');
+      el.innerHTML = items;
+    }
+
+    async function renderDetail(id){
+      el.innerHTML = '<p>Loading...</p>';
+      try{
+        const url = `${window.MAL?.API_BASE||location.origin}/api/anime/${id}`;
+        const r = await fetch(url);
+        if(!r.ok) throw new Error('fetch failed');
+        const data = await r.json();
+        const a = data;
+        const pic = a.main_picture?.large || a.main_picture?.medium || 'https://via.placeholder.com/300x420';
+        el.innerHTML = `<img src="${pic}" style="float:left;margin-right:12px;width:200px;height:280px;object-fit:cover"><h2>${a.title}</h2><p><strong>Sinopsis:</strong> ${a.synopsis||'--'}</p><p><strong>Genre:</strong> ${(a.genres||[]).map(g=>g.name).join(', ')}</p><p><strong>Rating:</strong> ${a.mean||'--'}</p><p><strong>Episode:</strong> ${a.episodes||'--'}</p><p><a href="watch.html?id=${a.id}&ep=1" class="btn">Tonton</a></p>`;
+      }catch(err){
+        el.innerHTML = `<p>Gagal memuat detail. Backend mungkin tidak berjalan. (${err.message})</p>`;
+      }
+    }
+
+    if(qstr){ renderSearch(qstr); }
+    else if(id){ renderDetail(id); }
+    else{ el.innerHTML = `<p>Pilih anime dari halaman utama atau gunakan pencarian.</p>` }
+  </script>
+</body>
+</html>
+>>>>>>> 1a81bd7 (Initial Aniverse template + MAL backend)

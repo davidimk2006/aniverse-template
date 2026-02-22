@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 node_modules/
 .env
 .env.local
@@ -9,3 +10,16 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 /.vercel
+=======
+node_modules/
+.env
+.env.local
+data/
+/*.log
+dist/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/.vercel
+>>>>>>> 1a81bd7 (Initial Aniverse template + MAL backend)
