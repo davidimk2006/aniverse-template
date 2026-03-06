@@ -1,25 +1,29 @@
 
 import { supabaseClient } from "./supabase.js"
 
-async function loadAnime() {
+async function loadAnime(){
 
-  const { data, error } = await supabaseClient
-    .from("anime")
-    .select("*")
-    .order("created_at", { ascending: false })
+const { data, error } = await supabaseClient
+.from("anime")
+.select("*")
+.order("created_at", { ascending:false })
 
-  if (error) {
-    console.error(error)
-    return
-  }
+if(error){
+console.log(error)
+return
+}
 
-  const container = document.getElementById("anime-list")
+const container = document.getElementById("anime-list")
+container.innerHTML=""
 
-  data.forEach(anime => {
-    const div = document.createElement("div")
-    div.innerHTML = `<h3>${anime.title}</h3>`
-    container.appendChild(div)
-  })
+data.forEach(anime=>{
+container.innerHTML += `
+<div class="anime-card">
+<img src="${anime.thumbnail}">
+<h3>${anime.title}</h3>
+</div>
+`
+})
 
 }
 
