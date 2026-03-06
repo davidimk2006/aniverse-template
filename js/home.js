@@ -1,7 +1,7 @@
 
 async function loadAnime() {
 
-const { data, error } = await supabase
+const { data, error } = await supabaseClient
 .from("anime")
 .select("*")
 .order("created_at", { ascending: false });
