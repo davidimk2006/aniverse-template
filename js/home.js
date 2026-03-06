@@ -1,25 +1,33 @@
 
-async function loadAnime(){
+async function loadAnime() {
 
-const { data } = await db
+const { data, error } = await supabase
 .from("anime")
 .select("*")
-.order("created_at",{ascending:false})
+.order("created_at", { ascending: false });
 
-const container=document.getElementById("anime-list")
-container.innerHTML=""
+if(error){
+console.log(error);
+return;
+}
 
-data.forEach(a=>{
-container.innerHTML+=`
-<a href="pages/anime.html?id=${a.id}">
-<div class="card">
-<img src="${a.poster}">
-<h3>${a.title}</h3>
+const list = document.getElementById("anime-list");
+list.innerHTML = "";
+
+if(!data) return;
+
+data.forEach(anime => {
+
+list.innerHTML += `
+<div class="anime-card">
+<img src="${anime.image}">
+<h3>${anime.title}</h3>
+<p>${anime.episode}</p>
 </div>
-</a>
-`
-})
+`;
+
+});
 
 }
 
-loadAnime()
+loadAnime();
