@@ -17,7 +17,7 @@ loadComments()
 
 async function loadComments(){
 
-const { data } = await supabase
+const { data } = await supabaseClient
 .from("comments")
 .select("*")
 .eq("anime_id",anime)
