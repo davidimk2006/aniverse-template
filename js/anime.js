@@ -4,7 +4,7 @@ const id=params.get("id")
 
 async function loadAnime(){
 
-const { data } = await supabase
+const { data } = await supabaseClient
 .from("anime")
 .select("*")
 .eq("id",id)
