@@ -4,7 +4,7 @@ const id=params.get("id")
 
 async function loadAnime(){
 
-const { data } = await supabaseClient
+const { data } = await supabase
 .from("anime")
 .select("*")
 .eq("id",id)
@@ -16,7 +16,7 @@ document.getElementById("anime-detail").innerHTML=`
 <p>${data.description}</p>
 `
 
-const { data:eps } = await supabaseClient
+const { data:eps } = await supabase
 .from("episodes")
 .select("*")
 .eq("anime_id",id)
