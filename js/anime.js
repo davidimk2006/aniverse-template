@@ -16,7 +16,7 @@ document.getElementById("anime-detail").innerHTML=`
 <p>${data.description}</p>
 `
 
-const { data:eps } = await supabase
+const { data:eps } = await supabaseClient
 .from("episodes")
 .select("*")
 .eq("anime_id",id)
