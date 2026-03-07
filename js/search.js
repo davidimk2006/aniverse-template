@@ -3,7 +3,7 @@ async function searchAnime(){
 
 const q=document.getElementById("search").value
 
-const { data } = await supabase
+const { data } = await supabaseClient
 .from("anime")
 .select("*")
 .ilike("title", `%${q}%`)
